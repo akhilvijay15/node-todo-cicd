@@ -1,29 +1,33 @@
-pipeline {
-    agent { label 'node-agent' }
+pipeline{
+    agent {label 'node-agent1'}
     
     stages{
         stage('Code'){
             steps{
-                git url: 'https://github.com/LondheShubham153/node-todo-cicd.git', branch: 'master' 
+                git url: 'https://github.com/akhilvijay15/node-todo-cicd.git', branch: 'master' 
             }
         }
-        stage('Build and Test'){
+        stage('Build'){
             steps{
-                sh 'docker build . -t trainwithshubham/node-todo-test:latest'
+                sh 'docker build . -t akhilvijay15/django_app:latest'
             }
+            
         }
         stage('Push'){
             steps{
-                withCredentials([usernamePassword(credentialsId: 'dockerHub', passwordVariable: 'dockerHubPassword', usernameVariable: 'dockerHubUser')]) {
-        	     sh "docker login -u ${env.dockerHubUser} -p ${env.dockerHubPassword}"
-                 sh 'docker push trainwithshubham/node-todo-test:latest'
-                }
+                 withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'dockerHubUser', passwordVariable: 'dockerHubPassword')]) {
+          
+          sh "docker login -u ${env.dockerHUbuser} -p ${env.dockerHubpassword}"
+          sh 'docker push akhilvijay15/django_app:latest'
+          }
             }
+            
         }
         stage('Deploy'){
             steps{
                 sh "docker-compose down && docker-compose up -d"
             }
+            
         }
     }
 }
